@@ -3,7 +3,7 @@ FROM node:20
 WORKDIR /app
 
 # Install required dependencies
-RUN apt-get update && apt-get install -y python3 build-essential netcat-traditional
+RUN apt-get update && apt-get install -y python3 build-essential netcat-traditional expect
 
 # Install global Medusa CLI
 RUN npm install -g @medusajs/medusa-cli

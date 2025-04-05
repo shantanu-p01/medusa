@@ -12,8 +12,21 @@ echo "PostgreSQL is up - executing initialization"
 # Check if Medusa is already initialized
 if [ ! -d "medusa-backend" ]; then
   echo "Creating new Medusa application..."
-  # Create a new Medusa project using create-medusa-app with the name medusa-backend
-  npx create-medusa-app@latest medusa-backend --skip-db --db-url "$DATABASE_URL" --no-browser
+  # Use expect to answer "no" to the storefront question automatically
+  apt-get update && apt-get install -y expect
+  
+  # Create expect script to handle interactive prompts
+  cat > create-medusa.exp << 'EXPEOF'
+  #!/usr/bin/expect -f
+  set timeout -1
+  spawn npx create-medusa-app@latest medusa-backend --skip-db --db-url "$env(DATABASE_URL)" --no-browser
+  expect "Would you like to create the Next.js storefront? You can also create it later (y/N)"
+  send "n\r"
+  expect eof
+  EXPEOF
+  
+  chmod +x create-medusa.exp
+  ./create-medusa.exp
   
   # Run migrations
   cd medusa-backend
