@@ -9,11 +9,20 @@ until nc -z localhost 5432; do
 done
 echo "PostgreSQL is up - executing initialization"
 
-# Check if Medusa is already initialized by looking for medusa-config.js
+# Check if Medusa is already initialized
 if [ ! -f "medusa-config.js" ]; then
   echo "Creating new Medusa application..."
-  # Initialize using medusa-cli new command with the --directory flag to specify current directory
-  npx @medusajs/medusa-cli new --skip-db --db-url=$DATABASE_URL --directory=medusa --seed
+  # Create a new Medusa project in the current directory with the correct flags
+  npx @medusajs/medusa-cli new medusa --skip-db --useDefaults
+  
+  # Update database configuration manually since we can't pass db-url
+  if [ -f "medusa-config.js" ]; then
+    sed -i 's|type: "sqlite"|type: "postgres"|g' medusa-config.js
+    sed -i 's|url: "postgres://localhost/medusa-store"|url: "'"$DATABASE_URL"'"|g' medusa-config.js
+  fi
+  
+  # Run migrations
+  npx medusa migrations run
 else
   echo "Medusa application already exists, running migrations..."
   npx medusa migrations run
@@ -28,4 +37,5 @@ fi
 
 # Start the Medusa server
 echo "Starting Medusa server..."
-npx medusa start
+# Use correct host parameter to make it accessible from outside the container
+npx medusa start --host=0.0.0.0
