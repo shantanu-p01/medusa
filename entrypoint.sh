@@ -10,15 +10,15 @@ done
 echo "PostgreSQL is up - executing initialization"
 
 # Check if Medusa is already initialized
-if [ ! -f "medusa-config.js" ]; then
+if [ ! -f "medusa-config.ts" ]; then
   echo "Creating new Medusa application..."
   # Create a new Medusa project in the current directory with the correct flags
   npx @medusajs/medusa-cli new medusa --skip-db --useDefaults
   
   # Update database configuration manually since we can't pass db-url
-  if [ -f "medusa-config.js" ]; then
-    sed -i 's|type: "sqlite"|type: "postgres"|g' medusa-config.js
-    sed -i 's|url: "postgres://localhost/medusa-store"|url: "'"$DATABASE_URL"'"|g' medusa-config.js
+  if [ -f "medusa-config.ts" ]; then
+    sed -i 's|type: "sqlite"|type: "postgres"|g' medusa-config.ts
+    sed -i 's|url: "postgres://localhost/medusa-store"|url: "'"$DATABASE_URL"'"|g' medusa-config.ts
   fi
   
   # Run migrations
