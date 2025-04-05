@@ -134,16 +134,16 @@ resource "aws_ecs_task_definition" "medusa_task" {
   family                   = "medusa-tasks"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "1024"
-  memory                   = "2048"
+  cpu                      = "2 vCPU"
+  memory                   = "4096"
   execution_role_arn       = "arn:aws:iam::767398105317:role/ecsTaskExecutionRole"
   
   container_definitions = jsonencode([
     {
       name = "medusa_postgres"
-      image = "postgres:17.2-alpine"
-      cpu = 256
-      memory = 512
+      image = "postgres"
+      # cpu = 512
+      # memory = 512
       portMappings = [
         {
           name = "postgres-5432-tcp"
@@ -180,12 +180,12 @@ resource "aws_ecs_task_definition" "medusa_task" {
     {
       name = "medusa_backend"
       image = "shantanupatil01/medusa:latest"
-      cpu = 512
-      memory = 768
+      # cpu = 512
+      # memory = 768
       dependsOn = [
         {
           containerName = "medusa_postgres"
-          condition = "HEALTHY"
+          condition = "START"
         }
       ]
       portMappings = [
