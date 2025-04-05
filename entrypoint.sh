@@ -3,7 +3,7 @@ set -e
 
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL..."
-until nc -z medusa_postgres 5432; do
+until nc -z localhost 5432; do
   echo "PostgreSQL not available yet - sleeping"
   sleep 2
 done

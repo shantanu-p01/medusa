@@ -146,7 +146,7 @@ resource "aws_ecs_task_definition" "medusa_task" {
       memory = 512
       portMappings = [
         {
-          name = "medusa_postgres-5432-tcp"
+          name = "postgres-5432-tcp"
           containerPort = 5432
           hostPort = 5432
           protocol = "tcp"
@@ -176,6 +176,7 @@ resource "aws_ecs_task_definition" "medusa_task" {
           "awslogs-stream-prefix" = "postgres"
         }
       }
+      hostname = "medusa_postgres"
     },
     {
       name = "medusa_backend"
@@ -184,7 +185,7 @@ resource "aws_ecs_task_definition" "medusa_task" {
       memory = 768
       portMappings = [
         {
-          name = "medusa_backend-9000-tcp"
+          name = "backend-9000-tcp"
           containerPort = 9000
           hostPort = 9000
           protocol = "tcp"
@@ -203,7 +204,7 @@ resource "aws_ecs_task_definition" "medusa_task" {
         },
         {
           name = "DATABASE_URL"
-          value = "postgres://medusa:medusa@medusa_postgres:5432/medusa"
+          value = "postgres://medusa:medusa@localhost:5432/medusa"
         },
         {
           name = "COOKIE_SECRET"
