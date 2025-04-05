@@ -28,7 +28,7 @@ jobs:
     
         # Wait for PostgreSQL to be ready
         echo "Waiting for PostgreSQL..."
-        until nc -z medusa_postgres 5432; do
+        until nc -z localhost 5432; do
           echo "PostgreSQL not available yet - sleeping"
           sleep 2
         done
@@ -82,7 +82,7 @@ jobs:
         # Set environment variables
         ENV NODE_ENV=production
         ENV PORT=9000
-        ENV DATABASE_URL=postgres://medusa:medusa@medusa_postgres:5432/medusa
+        ENV DATABASE_URL=postgres://medusa:medusa@localhost:5432/medusa
         ENV COOKIE_SECRET=supersecret
         ENV JWT_SECRET=supersecret
 

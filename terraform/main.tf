@@ -209,7 +209,7 @@ resource "aws_ecs_task_definition" "medusa_task" {
         },
         {
           name = "DATABASE_URL"
-          value = "postgres://medusa:medusa@medusa_postgres:5432/medusa"
+          value = "postgres://medusa:medusa@localhost:5432/medusa"
         },
         {
           name = "COOKIE_SECRET"
