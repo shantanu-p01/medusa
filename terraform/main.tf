@@ -176,13 +176,18 @@ resource "aws_ecs_task_definition" "medusa_task" {
           "awslogs-stream-prefix" = "postgres"
         }
       }
-      hostname = "medusa_postgres"
     },
     {
       name = "medusa_backend"
       image = "shantanupatil01/medusa:latest"
       cpu = 512
       memory = 768
+      dependsOn = [
+        {
+          containerName = "medusa_postgres"
+          condition = "HEALTHY"
+        }
+      ]
       portMappings = [
         {
           name = "backend-9000-tcp"
@@ -217,12 +222,6 @@ resource "aws_ecs_task_definition" "medusa_task" {
         {
           name = "SEED_DATABASE"
           value = "true"
-        }
-      ]
-      dependsOn = [
-        {
-          containerName = "medusa_postgres"
-          condition = "START"
         }
       ]
       logConfiguration = {
