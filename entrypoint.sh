@@ -22,20 +22,20 @@ if [ ! -f "medusa-config.js" ]; then
   fi
   
   # Run migrations
-  npx medusa migrations run
+  cd medusa ; npx medusa migrations run
 else
   echo "Medusa application already exists, running migrations..."
-  npx medusa migrations run
+  cd medusa ; npx medusa migrations run
 fi
 
 # Seed data if needed (only on first run)
 if [ "$SEED_DATABASE" = "true" ] && [ ! -f ".seed-completed" ]; then
   echo "Seeding database with custom data..."
-  npx medusa seed --seed-file=./data/seed.json || echo "Seeding failed, continuing anyway"
+  cd medusa ; npx medusa seed --seed-file=./data/seed.json || echo "Seeding failed, continuing anyway"
   touch .seed-completed
 fi
 
 # Start the Medusa server
 echo "Starting Medusa server..."
 # Use correct host parameter to make it accessible from outside the container
-npx medusa start --host=0.0.0.0
+cd medusa ; npx medusa start --host=0.0.0.0
